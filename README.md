@@ -81,7 +81,7 @@ Restart apache
 
 ### Create Document Root
 
-Goal is to create a folder /Users/<username>/Sites If the login name is "teste" then the folder will be /Users/teste/Sites Note that System Root is at /Library/WebServer/Documents/
+Goal is to create a folder /Users/< username >/Sites If the login name is "teste" then the folder will be /Users/teste/Sites Note that System Root is at /Library/WebServer/Documents/
 
 Create a folder "Sites" under ~/ . Alternatively, use Mac's Finder to create the folder /Users/teste/Sites
 
