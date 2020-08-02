@@ -43,7 +43,18 @@ Remember useful commands.
     $ sudo mkdir /etc/resolver
     $ sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/local.com.br'
 
-### Apache PHP Setup
+### PHP Setup
+
+    $ brew install php
+    $ brew install imagemagick
+    $ brew install pkg-config
+    $ brew install libzip
+    $ brew install mcrypt
+    $ pecl install imagick
+    $ pecl install zip
+    $ pecl install mcrypt
+
+### Apache Setup
     
 macOS comes with PHP pre-installed too, but we need to tell Apache to use them. 
 We need to edit the /private/etc/apache2/httpd.conf and uncomment these lines...
