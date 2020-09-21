@@ -14,9 +14,14 @@ Homebrew can self-diagnose. Let's see if everything works the way it should.
 ###
 	
 ### Apache Installation
-macOS comes with Apache pre-installed, so we will use it.
+macOS comes with Apache pre-installed, stop it and prevent it from starting on boot.
 
-    $ sudo apachectl start
+    $ sudo apachectl stop
+    $ sudo launchctl unload /System/Library/LaunchDaemons/org.apache.httpd.plist 2>/dev/null
+	
+We don't want to use the pre-installed Apache. Instead we'll brew and configure it to run on standard ports (80/443).
+    
+    $ brew install httpd
 
 Check installation.
 
@@ -25,8 +30,12 @@ Check installation.
     
 Start Apache, open browser with http://127.0.0.1 and you should see a message saying “It works!”
 
-    $ sudo apachectl start
-	
+    $ sudo apachectl -k start
+
+Set Apache to launch on startup.
+
+    $ sudo brew services start httpd
+
 Remember useful commands.
 
     $ sudo apachectl start
@@ -45,7 +54,9 @@ Remember useful commands.
 
 ### PHP Setup
 
-    $ brew install php
+    $ brew install php@5.6
+    $ brew unlink php@5.6
+    $ brew install php@7.3
     $ brew install imagemagick
     $ brew install pkg-config
     $ brew install libzip
@@ -54,10 +65,12 @@ Remember useful commands.
     $ pecl install zip
     $ pecl install mcrypt
 
+The php.ini file can be found in: /usr/local/etc/php/7.3/php.ini.
+
 ### Apache Setup
     
 macOS comes with PHP pre-installed too, but we need to tell Apache to use them. 
-We need to edit the /private/etc/apache2/httpd.conf and uncomment these lines...
+We need to edit the /usr/local/etc/apache2/httpd.conf and uncomment these lines...
 	
     LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
     LoadModule negotiation_module libexec/apache2/mod_negotiation.so
@@ -67,8 +80,8 @@ We need to edit the /private/etc/apache2/httpd.conf and uncomment these lines...
     LoadModule rewrite_module libexec/apache2/mod_rewrite.so
     LoadModule php7_module libexec/apache2/libphp7.so
 
-    Include /private/etc/apache2/extra/httpd-userdir.conf
-    Include /private/etc/apache2/extra/httpd-vhosts.conf
+    Include /usr/local/etc/apache2/extra/httpd-userdir.conf
+    Include /usr/local/etc/apache2/extra/httpd-vhosts.conf
 
 Modify httpd.conf more...
     
@@ -101,9 +114,9 @@ Create a folder "Sites" under ~/ . Alternatively, use Mac's Finder to create the
 
 Creating username.conf
 
-Go to /private/etc/apache2/users/ and create the file
+Go to /usr/local/etc/apache2/users/ and create the file
 
-    $ cd /private/etc/apache2/users/
+    $ cd /usr/local/etc/apache2/users/
     $ sudo nano username.conf
 
 Edit the file to add following lines -
@@ -120,13 +133,13 @@ Fix the permission of the file
 
     $ sudo chmod 644 username.conf
 
-Now we need to edit the /private/etc/apache2/extra/httpd-userdir.conf to check the UserDir...
+Now we need to edit the /usr/local/etc/apache2/extra/httpd-userdir.conf to check the UserDir...
 
     UserDir Sites
 
 and uncomment this line.
 
-    Include /private/etc/apache2/users/*.conf 
+    Include /usr/local/etc/apache2/users/*.conf 
 
 Restart apache
     
@@ -134,7 +147,7 @@ Restart apache
 
 ### Virtual Hosts
 
-We need to edit the /private/etc/apache2/extra/httpd-vhosts.conf to add the general setup for the virtual host. 
+We need to edit the /usr/local/etc/apache2/extra/httpd-vhosts.conf to add the general setup for the virtual host. 
 
         <VirtualHost *:80>
             VirtualDocumentRoot "/Users/<username>/Sites/%1/wwwroot"
